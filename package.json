@@ -22,9 +22,17 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WinterCore/use-async-wrapper.git"
+  },
+  "homepage": "https://use-async-wrapper.netlify.app",
+  "bugs": "https://github.com/WinterCore/use-async-wrapper/issues",
+  "author": "WinterCore",
   "keywords": [
     "react",
     "async",

@@ -24,12 +24,15 @@ const meta = {
   title: "React Query/Bridge",
   decorators: [
     Story => {
-      const [client] = React.useState(
-        () =>
-          new QueryClient({
-            defaultOptions: { queries: { retry: false, staleTime: Infinity } },
-          }),
-      );
+      const [client] = React.useState(() => {
+        // Fresh fake-server state per story mount, so toggles don't leak between stories
+        server.fail = false;
+        server.discount = 0;
+        server.rate = 0.92;
+        return new QueryClient({
+          defaultOptions: { queries: { retry: false, staleTime: Infinity } },
+        });
+      });
       return (
         <QueryClientProvider client={client}>
           <Story />

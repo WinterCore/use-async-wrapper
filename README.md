@@ -190,7 +190,7 @@ const [users, setUsers] = useState(new AsyncData<User[], ApiError>());
 setUsers(prev => prev.withError({ code: 503, message: 'Users service is down' }));
 
 <AsyncWrapperError>
-  {(error) => <ErrorBanner>{error.code} — {error.message}</ErrorBanner>}
+  {(error) => <ErrorBanner message={`${error.code} — ${error.message}`} />}
 </AsyncWrapperError>
 ```
 
@@ -265,7 +265,7 @@ If the data is empty (not yet loaded), the mapper is not called.
 The error-channel counterpart of `map` — transforms the error if present, leaves data/loading untouched. Useful for normalizing error types at a boundary so sources with different error types can `combine`:
 
 ```ts
-const users: AsyncData<User[], ApiError> = fetchState;
+// users: AsyncData<User[], ApiError>
 const normalized = users.mapError(e => e.message);
 // AsyncData<User[], string>
 ```
