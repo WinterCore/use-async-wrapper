@@ -24,6 +24,7 @@ You fetch some data. So you add an `isLoading` boolean, an `error` state, and a 
   - [Cancelling in-flight requests](#cancelling-in-flight-requests)
   - [get / unwrap](#get--unwrap)
   - [map](#map)
+  - [mapError](#maperror)
   - [flatMap](#flatmap)
   - [combine](#combine)
 - [useAsyncWrapper](#useasyncwrapper)
@@ -258,6 +259,18 @@ const ids = users.map(users => users.map(u => u.id));
 ```
 
 If the data is empty (not yet loaded), the mapper is not called.
+
+### mapError
+
+The error-channel counterpart of `map` — transforms the error if present, leaves data/loading untouched. Useful for normalizing error types at a boundary so sources with different error types can `combine`:
+
+```ts
+const users: AsyncData<User[], ApiError> = fetchState;
+const normalized = users.mapError(e => e.message);
+// AsyncData<User[], string>
+```
+
+If the error is `null`, the mapper is not called. In components, wrap derived values in `useMemo` as usual — or for React Query, use `useQueryAsyncData`'s `mapError` option, which memoizes for you.
 
 ### flatMap
 

@@ -212,21 +212,27 @@ const MapDemo = () => {
 
   const names = React.useMemo(() => users.map(list => list.map(u => u.name)), [users]);
 
+  const normalized = React.useMemo(
+    () => users.mapError(e => (e === "ERR_USERS_DOWN" ? "Users service is down" : e)),
+    [users],
+  );
+
   return (
     <Demo
       intro={
         <>
           <code>map</code> transforms the data while <code>isLoading</code>, <code>error</code>,
-          and <code>abortController</code> pass through unchanged. Press{" "}
-          <em>refetch</em> after resolving: the mapped value keeps both the stale data{" "}
-          <em>and</em> the loading flag.
+          and <code>abortController</code> pass through unchanged — press <em>refetch</em> after
+          resolving and the mapped value keeps both the stale data <em>and</em> the loading
+          flag. <code>mapError</code> is the error-channel counterpart: press <em>fail</em> and
+          watch the raw error code become a human-readable message.
         </>
       }
       controls={
         <ButtonRow>
           <Btn onClick={() => setUsers(prev => prev.withLoading())}>refetch — withLoading()</Btn>
           <Btn onClick={() => setUsers(prev => prev.withData(mockUsers))}>resolve</Btn>
-          <Btn onClick={() => setUsers(prev => prev.withError("nope"))}>fail</Btn>
+          <Btn onClick={() => setUsers(prev => prev.withError("ERR_USERS_DOWN"))}>fail</Btn>
           <Btn onClick={() => setUsers(new AsyncData<User[]>())}>reset</Btn>
         </ButtonRow>
       }
@@ -239,11 +245,16 @@ const MapDemo = () => {
         <>
           <StatePanel label="users" state={users} />
           <StatePanel label="mapped" state={names} />
+          <StatePanel label="mapError'd" state={normalized} />
         </>
       }
       code={`
 const names = users.map(list => list.map(u => u.name));
 // AsyncData<string[]> — same isLoading/error state, data transformed
+
+const normalized = users.mapError(e =>
+  e === 'ERR_USERS_DOWN' ? 'Users service is down' : e);
+// error transformed, data/loading untouched
 
 // Stale-while-revalidate survives the transform:
 // users:  { data: [...], isLoading: true }

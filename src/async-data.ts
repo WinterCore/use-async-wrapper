@@ -205,6 +205,29 @@ export class AsyncData<T, E = string> {
   }
 
   /**
+   * Transforms the error value if present — the error-channel counterpart of `map`.
+   * `data`, `isLoading`, and `abortController` always pass through unchanged.
+   *
+   * Useful for normalizing error types at a boundary so sources with different
+   * error types can `combine` into one pipeline.
+   *
+   * If the error is `null`, the mapper is not called.
+   *
+   * @example
+   * const users = new AsyncData<User[], ApiError>({ error: { code: 503, message: 'down' } });
+   * const friendly = users.mapError(e => e.message);
+   * // AsyncData<User[], string>
+   */
+  public mapError<F>(mapper: (error: E) => F): AsyncData<T, F> {
+    return new AsyncData<T, F>({
+      abortController: this.abortController,
+      data: this.data,
+      error: this.error === null ? null : mapper(this.error),
+      isLoading: this.isLoading,
+    });
+  }
+
+  /**
    * Like `map`, but the mapper returns an `AsyncData` which is flattened into the
    * result — the monadic bind. Use this when the transformation is itself
    * async-stateful, e.g. looking up another `AsyncData` based on the loaded value.
