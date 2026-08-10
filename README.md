@@ -12,6 +12,15 @@ You fetch some data. So you add an `isLoading` boolean, an `error` state, and a 
 - Zero dependencies. Works with plain `fetch`, websockets, one-off promises — any async source. Typed errors end to end.
 - Optional React Query bridge — React Query fetches and caches; this renders
 
+## Contents
+
+- [Install](#install)
+- [The problem](#the-problem)
+- [AsyncData](#asyncdata) — [`withLoading`](#withloading) · [`withData` / `withError`](#withdata--witherror) · [cancellation](#cancelling-in-flight-requests) · [`get` / `unwrap`](#get--unwrap) · [`map`](#map) · [`flatMap`](#flatmap) · [`combine`](#combine)
+- [useAsyncWrapper](#useasyncwrapper) — [basic usage](#basic-usage) · [defaults](#default-loading-and-error-states) · [custom states](#custom-loading-and-error-states) · [suppressing defaults](#suppressing-default-fallbacks) · [`renderLoading`](#renderloading) · [state priority](#state-priority)
+- [Why not Suspense?](#why-not-suspense)
+- [React Query](#react-query)
+
 ## Install
 
 ```bash
