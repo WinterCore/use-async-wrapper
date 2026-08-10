@@ -16,10 +16,25 @@ You fetch some data. So you add an `isLoading` boolean, an `error` state, and a 
 
 - [Install](#install)
 - [The problem](#the-problem)
-- [AsyncData](#asyncdata) — [`withLoading`](#withloading) · [`withData` / `withError`](#withdata--witherror) · [cancellation](#cancelling-in-flight-requests) · [`get` / `unwrap`](#get--unwrap) · [`map`](#map) · [`flatMap`](#flatmap) · [`combine`](#combine)
-- [useAsyncWrapper](#useasyncwrapper) — [basic usage](#basic-usage) · [defaults](#default-loading-and-error-states) · [custom states](#custom-loading-and-error-states) · [suppressing defaults](#suppressing-default-fallbacks) · [`renderLoading`](#renderloading) · [state priority](#state-priority)
+- [AsyncData](#asyncdata)
+  - [Initial state](#initial-state)
+  - [withLoading](#withloading)
+  - [withData / withError](#withdata--witherror)
+  - [Cancelling in-flight requests](#cancelling-in-flight-requests)
+  - [get / unwrap](#get--unwrap)
+  - [map](#map)
+  - [flatMap](#flatmap)
+  - [combine](#combine)
+- [useAsyncWrapper](#useasyncwrapper)
+  - [Basic usage](#basic-usage)
+  - [Default loading and error states](#default-loading-and-error-states)
+  - [Custom loading and error states](#custom-loading-and-error-states)
+  - [Suppressing default fallbacks](#suppressing-default-fallbacks)
+  - [renderLoading](#renderloading)
+  - [State priority](#state-priority)
 - [Why not Suspense?](#why-not-suspense)
 - [React Query](#react-query)
+- [License](#license)
 
 ## Install
 
