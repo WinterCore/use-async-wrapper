@@ -48,22 +48,44 @@ export const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(res
 // Demo UI primitives
 // ---------------------------------------------------------------------------
 
-const btnStyle: React.CSSProperties = {
-  padding: "6px 12px",
-  border: "1px solid #ccc",
-  borderRadius: 6,
-  background: "#fff",
-  cursor: "pointer",
-  fontSize: 13,
-  fontFamily: "inherit",
-};
+// Injected once so buttons get real :hover / :active affordances (inline styles can't).
+if (typeof document !== "undefined" && !document.getElementById("uaw-btn-styles")) {
+  const el = document.createElement("style");
+  el.id = "uaw-btn-styles";
+  el.textContent = `
+    .uaw-btn {
+      padding: 7px 14px;
+      border: 1px solid #b6bcc4;
+      border-bottom-color: #9aa1ab;
+      border-radius: 7px;
+      background: linear-gradient(#ffffff, #eef0f3);
+      box-shadow: 0 1px 2px rgba(20, 30, 50, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      color: #1f2937;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.1s, box-shadow 0.1s, transform 0.05s;
+    }
+    .uaw-btn:hover:not(:disabled) {
+      background: linear-gradient(#fbfcfe, #e2e6eb);
+      border-color: #8b93a0;
+    }
+    .uaw-btn:active:not(:disabled) {
+      background: #dde1e7;
+      box-shadow: inset 0 2px 3px rgba(20, 30, 50, 0.18);
+      transform: translateY(1px);
+    }
+    .uaw-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  `;
+  document.head.appendChild(el);
+}
 
-export const Btn = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-  <button
-    type="button"
-    {...props}
-    style={{ ...btnStyle, opacity: props.disabled ? 0.4 : 1, ...props.style }}
-  />
+export const Btn = ({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <button type="button" className={`uaw-btn ${className ?? ""}`} {...props} />
 );
 
 export const ButtonRow = ({ label, children }: { label?: string; children: React.ReactNode }) => (
