@@ -18,6 +18,7 @@ You fetch some data. So you add an `isLoading` boolean, an `error` state, and a 
 - [The problem](#the-problem)
 - [AsyncData](#asyncdata)
   - [Initial state](#initial-state)
+  - [Custom error types](#custom-error-types)
   - [withLoading](#withloading)
   - [withData / withError](#withdata--witherror)
   - [Cancelling in-flight requests](#cancelling-in-flight-requests)
@@ -172,6 +173,27 @@ Instances are immutable — every transition returns a new `AsyncData`, which is
 // Empty, not loading, no error — a blank slate
 const state = new AsyncData<User>();
 ```
+
+### Custom error types
+
+The second type parameter is the error type. It defaults to `string`, but any type works — whatever you pass to `withError` comes back, fully typed, in `AsyncWrapperError`:
+
+```tsx
+interface ApiError {
+  code: number;
+  message: string;
+}
+
+const [users, setUsers] = useState(new AsyncData<User[], ApiError>());
+
+setUsers(prev => prev.withError({ code: 503, message: 'Users service is down' }));
+
+<AsyncWrapperError>
+  {(error) => <ErrorBanner>{error.code} — {error.message}</ErrorBanner>}
+</AsyncWrapperError>
+```
+
+One rule of thumb: `combine` requires all its sources to share the same error type, so pick one error type per pipeline.
 
 ### withLoading
 
@@ -429,9 +451,11 @@ const ProductList = ({ currency }: { currency: string }) => {
 
 Because `isFetching` maps to `isLoading` and cached data is preserved, React Query's background refetches flow straight into `renderLoading="no-data"` — stale prices stay visible, dimmed, while the new rate loads.
 
+**Why `mapError`?** React Query hands you `Error` objects; your error render functions want something typed and renderable. `mapError` does that conversion once, at the boundary — here `e => e.message` turns both queries into `AsyncData<..., string>`. That's also what makes them composable: `combine` requires all its sources to share one error type, so normalizing each query's error at the edge is what lets query-backed and manually-fetched `AsyncData`s mix in the same pipeline. Omit it and the error passes through as `Error`.
+
 Notes:
 
-- `mapError` converts the query's error (default `Error`) into your `AsyncData`'s error type. Without it, the error passes through as-is. It's read through a ref, so inline arrow functions don't churn the memo.
+- `mapError` is read through a ref, so passing an inline arrow function doesn't churn the memoized result.
 - Errors win over cached data, mirroring `AsyncWrapper`'s state priority.
 - `undefined` data is treated as "not loaded" — don't use the bridge for queries where `undefined` is a valid payload.
 - `queryToAsyncData` is the pure, non-hook version of the same conversion, useful in tests or outside components.
