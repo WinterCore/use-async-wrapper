@@ -9,5 +9,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src", "stories", ".storybook"]
+  "include": ["src", "stories", "tests", ".storybook", "vitest.config.ts"]
 }
